@@ -1,3 +1,5 @@
+// code written by ChatGPT
+
 const { spawn } = require('child_process');
 
 // Define the path to the Chromium browser
