@@ -4,15 +4,19 @@ const { spawn } = require('child_process');
 const chromiumPath = '/usr/bin/chromium-browser';
 
 // Define the options for launching Chromium
-const options = [
+const chromiumOptions = [
     '--noerrdialogs',
     '--disable-infobars',
     '--kiosk',
     'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
 ];
 
-// Launch Chromium
-const chromium = spawn(chromiumPath, options);
+// Set up the environment variables, including DISPLAY
+const env = Object.create(process.env);
+env.DISPLAY = ':0';
+
+// Launch Chromium with the specified environment
+const chromium = spawn(chromiumPath, chromiumOptions, { env });
 
 chromium.stdout.on('data', (data) => {
     console.log(`stdout: ${data}`);
@@ -23,5 +27,5 @@ chromium.stderr.on('data', (data) => {
 });
 
 chromium.on('close', (code) => {
-    console.log(`child process exited with code ${code}`);
+    console.log(`Chromium process exited with code ${code}`);
 });
