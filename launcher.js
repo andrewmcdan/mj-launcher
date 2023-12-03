@@ -102,8 +102,20 @@ class Launcher {
         if (this.running) {
             // kill chromium
             this.chromium.kill();
+
+            let pid = this.chromium.pid;
+
+            // kill chromium's children
+            spawn('pkill', ['-P', pid]);
         }
         this.running = true;
+        this.chromiumOptions = [
+            '--noerrdialogs',
+            '--disable-infobars',
+            '--kiosk',
+            'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration + '&showPrompt=' + (this.showPrompt ? 'true' : 'false')
+            //'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
+        ];
         this.chromium = spawn(this.chromiumPath, this.chromiumOptions, { env: this.env });
         this.chromium.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
