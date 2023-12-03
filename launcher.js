@@ -43,8 +43,8 @@ class Launcher {
     }
 
     set timeToRestart(value) {
+        if (value != this._timeToRestart) this.optionsModified = true;
         this._timeToRestart = value;
-        this.optionsModified = true;
     }
 
     get enableAutoAdjustUpdateInterval() {
@@ -52,8 +52,8 @@ class Launcher {
     }
 
     set enableAutoAdjustUpdateInterval(value) {
+        if (value != this._enableAutoAdjustUpdateInterval) this.optionsModified = true;
         this._enableAutoAdjustUpdateInterval = value;
-        this.optionsModified = true;
     }
 
     get updateInterval() {
@@ -61,8 +61,8 @@ class Launcher {
     }
 
     set updateInterval(value) {
+        if (value != this._updateInterval) this.optionsModified = true;
         this._updateInterval = value;
-        this.optionsModified = true;
     }
 
     get fadeDuration() {
@@ -70,8 +70,8 @@ class Launcher {
     }
 
     set fadeDuration(value) {
+        if (value != this._fadeDuration) this.optionsModified = true;
         this._fadeDuration = value;
-        this.optionsModified = true;
     }
 
     get showPrompt() {
@@ -79,8 +79,8 @@ class Launcher {
     }
 
     set showPrompt(value) {
+        if (value != this._showPrompt) this.optionsModified = true;
         this._showPrompt = value;
-        this.optionsModified = true;
     }
 
     run() {
