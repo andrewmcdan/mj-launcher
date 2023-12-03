@@ -102,11 +102,7 @@ class Launcher {
         if (this.running) {
             // kill chromium
             this.chromium.kill();
-
-            let pid = this.chromium.pid;
-
-            // kill chromium's children
-            spawn('pkill', ['-P', pid]);
+            process.kill(this.chromium.pid);
         }
         this.running = true;
         this.chromiumOptions = [
@@ -133,12 +129,12 @@ class Launcher {
     async updateOptions() {
         let options = await fetch('http://mj-downloader.lan:3001/showOptions').then(res => res.json());
         console.log(options);
-        this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval;
-        this.updateInterval = options.updateInterval;
-        this.fadeDuration = options.fadeDuration;
-        this.showPrompt = options.showPrompt;
-        this.timeToRestart = options.timeToRestart;
-        this.timeToRestartEnabled = options.timeToRestartEnabled;
+        if (options.enableAutoAdjustUpdateInterval !== null && options.enableAutoAdjustUpdateInterval !== undefined) this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval;
+        if (options.updateInterval !== null && options.updateInterval !== undefined) this.updateInterval = options.updateInterval;
+        if (options.fadeDuration !== null && options.fadeDuration !== undefined) this.fadeDuration = options.fadeDuration;
+        if (options.showPrompt !== null && options.showPrompt !== undefined) this.showPrompt = options.showPrompt;
+        if (options.timeToRestart !== null && options.timeToRestart !== undefined) this.timeToRestart = options.timeToRestart;
+        if (options.timeToRestartEnabled !== null && options.timeToRestartEnabled !== undefined) this.timeToRestartEnabled = options.timeToRestartEnabled;
         if (this.optionsModified) {
             this.optionsModified = false;
             this.startRestart();
