@@ -16,7 +16,6 @@ class Launcher {
         this.timeToRestart = 0;
         this.runTimeout = null;
         this.chromium = null;
-        this.startRestart();
         this.optionsUptdate = null;
         this.enableAutoAdjustUpdateInterval = false;
         this.updateInterval = 11;
@@ -25,8 +24,10 @@ class Launcher {
             '--noerrdialogs',
             '--disable-infobars',
             '--kiosk',
-            'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=' + this.enableAutoAdjustUpdateInterval ? 'true' : 'false' + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration
+            'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration
+            //'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
         ];
+        this.startRestart();
     }
 
     run() {
