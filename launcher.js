@@ -5,7 +5,6 @@ const { spawn } = require('child_process');
 const env = Object.create(process.env);
 env.DISPLAY = ':0';
 
-
 class Launcher {
     constructor() {
         this.chromiumPath = '/usr/bin/chromium-browser';
@@ -14,20 +13,74 @@ class Launcher {
         this.env.DISPLAY = ':0';
         this.running = false;
         this.timeToRestart = 0;
+        this.timeToRestartEnabled = true;
         this.runTimeout = null;
         this.chromium = null;
         this.optionsUptdate = null;
         this.enableAutoAdjustUpdateInterval = false;
         this.updateInterval = 11;
         this.fadeDuration = 3.5;
+        this.showPrompt = false;
         this.chromiumOptions = [
             '--noerrdialogs',
             '--disable-infobars',
             '--kiosk',
-            'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration
+            'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration + '&showPrompt=' + (this.showPrompt ? 'true' : 'false')
             //'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
         ];
+        this.optionsModified = false;
+
+        this.optionsUptdate = setInterval(() => {
+            this.updateOptions();
+        }, 1000 * 60);
+
+
         this.startRestart();
+    }
+
+    get timeToRestart() {
+        return this._timeToRestart;
+    }
+
+    set timeToRestart(value) {
+        this._timeToRestart = value;
+        this.optionsModified = true;
+    }
+
+    get enableAutoAdjustUpdateInterval() {
+        return this._enableAutoAdjustUpdateInterval;
+    }
+
+    set enableAutoAdjustUpdateInterval(value) {
+        this._enableAutoAdjustUpdateInterval = value;
+        this.optionsModified = true;
+    }
+
+    get updateInterval() {
+        return this._updateInterval;
+    }
+
+    set updateInterval(value) {
+        this._updateInterval = value;
+        this.optionsModified = true;
+    }
+
+    get fadeDuration() {
+        return this._fadeDuration;
+    }
+
+    set fadeDuration(value) {
+        this._fadeDuration = value;
+        this.optionsModified = true;
+    }
+
+    get showPrompt() {
+        return this._showPrompt;
+    }
+
+    set showPrompt(value) {
+        this._showPrompt = value;
+        this.optionsModified = true;
     }
 
     run() {
@@ -41,12 +94,8 @@ class Launcher {
             timeUntilRestart += 1000 * 60 * 60 * 24;
         }
         this.runTimeout = setTimeout(() => {
-            this.startRestart();
+            if (this.timeToRestartEnabled) this.startRestart();
         }, timeUntilRestart);
-
-        this.optionsUptdate = setInterval(() => {
-            this.updateOptions();
-        }, 1000 * 60);
     }
 
     startRestart() {
@@ -72,6 +121,16 @@ class Launcher {
     async updateOptions() {
         let options = await fetch('http://mj-downloader.lan:3001/showOptions').then(res => res.json());
         console.log(options);
+        this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval;
+        this.updateInterval = options.updateInterval;
+        this.fadeDuration = options.fadeDuration;
+        this.showPrompt = options.showPrompt;
+        this.timeToRestart = options.timeToRestart;
+        this.timeToRestartEnabled = options.timeToRestartEnabled;
+        if (this.optionsModified) {
+            this.optionsModified = false;
+            this.startRestart();
+        }
     }
 };
 
