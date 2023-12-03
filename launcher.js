@@ -25,7 +25,7 @@ class Launcher {
             '--noerrdialogs',
             '--disable-infobars',
             '--kiosk',
-            `http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=${this.enableAutoAdjustUpdateInterval ? 'true' : 'false'}&updateInterval=${this.updateInterval}&fadeDuration=${this.fadeDuration}`
+            `http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=${this.enableAutoAdjustUpdateInterval}&updateInterval=${this.updateInterval}&fadeDuration=${this.fadeDuration}`
         ];
     }
 
