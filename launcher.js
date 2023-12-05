@@ -162,7 +162,7 @@ class AptManager {
             this.checkForUpdate();
         }, this.updateCheckInterval);
 
-        this.proc = spawn('sudo', ['apt update']);
+        this.proc = spawn('sudo', ['apt', 'update']);
         this.proc.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
         });
