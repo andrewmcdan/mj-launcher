@@ -98,11 +98,13 @@ class Launcher {
         }, timeUntilRestart);
     }
 
-    startRestart() {
+    async startRestart() {
         if (this.running) {
             // kill chromium
             this.chromium.kill();
             process.kill(this.chromium.pid);
+            spawn('killall', ['chromium-browser']);
+            await waitSeconds(1);
         }
         this.running = true;
         this.chromiumOptions = [
@@ -141,6 +143,14 @@ class Launcher {
         }
     }
 };
+
+function waitSeconds(seconds) {
+    return new Promise((resolve, reject) => {
+        setTimeout(() => {
+            resolve();
+        }, seconds * 1000);
+    });
+}
 
 let launcher = new Launcher();
 launcher.run();
