@@ -148,9 +148,11 @@ class Launcher {
 
 class AptManager {
     constructor() {
-        this.updateCheckInterval = 1000 * 60 * 10;
+        this.updateCheckInterval = 1000 * 60 * 30; // 30 minutes
         this.updateTimeout = null;
-        this.proc = null;
+        this.updateProc = null;
+        this.upgradeProc = null;
+        this.procOutput = "";
         this.checkForUpdate();
     }
 
@@ -162,14 +164,30 @@ class AptManager {
             this.checkForUpdate();
         }, this.updateCheckInterval);
 
-        this.proc = spawn('sudo', ['apt', 'update']);
-        this.proc.stdout.on('data', (data) => {
+        this.updateProc = spawn('sudo', ['apt', 'update']);
+
+        this.updateProc.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
+            this.procOutput += data;
         });
-        this.proc.stderr.on('data', (data) => {
+        this.updateProc.stderr.on('data', (data) => {
             console.error(`stderr: ${data}`);
         });
-        this.proc.on('close', (code) => {
+        this.updateProc.on('close', (code) => {
+            if (this.procOutput.includes('can be upgraded')) {
+                console.log('apt update available');
+                this.upgradeProc = spawn('sudo', ['apt', 'upgrade', '-y']);
+                this.upgradeProc.stdout.on('data', (data) => {
+                    console.log(`stdout: ${data}`);
+                });
+                this.upgradeProc.stderr.on('data', (data) => {
+                    console.error(`stderr: ${data}`);
+                });
+                this.upgradeProc.on('close', (code) => {
+                    console.log(`apt upgrade process exited with code ${code}`);
+                    spawn('sudo', ['reboot']);
+                });
+            }
             console.log(`apt update process exited with code ${code}`);
         });
     }
