@@ -38,6 +38,7 @@ class Launcher {
         this.startRestart();
     }
 
+    // #region
     get timeToRestart() {
         return this._timeToRestart;
     }
@@ -82,6 +83,7 @@ class Launcher {
         if (value != this._showPrompt) this.optionsModified = true;
         this._showPrompt = value;
     }
+    //#endregion
 
     run() {
         if (this.runTimeout !== null) {
@@ -144,6 +146,35 @@ class Launcher {
     }
 };
 
+class AptManager {
+    constructor() {
+        this.updateCheckInterval = 1000 * 60 * 10;
+        this.updateTimeout = null;
+        this.proc = null;
+        this.checkForUpdate();
+    }
+
+    checkForUpdate() {
+        if (this.updateTimeout !== null) {
+            clearTimeout(this.updateTimeout);
+        }
+        this.updateTimeout = setTimeout(() => {
+            this.checkForUpdate();
+        }, this.updateCheckInterval);
+
+        this.proc = spawn('sudo', ['apt update']);
+        this.proc.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+        });
+        this.proc.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
+        this.proc.on('close', (code) => {
+            console.log(`apt update process exited with code ${code}`);
+        });
+    }
+}
+
 function waitSeconds(seconds) {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -153,4 +184,5 @@ function waitSeconds(seconds) {
 }
 
 let launcher = new Launcher();
+let aptManager = new AptManager();
 launcher.run();
