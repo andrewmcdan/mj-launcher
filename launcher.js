@@ -1,4 +1,6 @@
-// code written by ChatGPT
+// TODO: add web server for reboot/shutdown and other commands
+
+// much code written by ChatGPT.
 const { spawn } = require('child_process');
 
 // Set up the environment variables, including DISPLAY
