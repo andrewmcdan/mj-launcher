@@ -166,7 +166,7 @@ class AptManager {
             this.checkForUpdate();
         }, this.updateCheckInterval);
 
-        this.gitProc = spawn('git', ['pull'], { cwd: '/home/pi/mj-launcher' });
+        this.gitProc = spawn('git', ['pull'], { cwd: '/home/andrew/mj-launcher' });
         this.gitInProgress = true;
         this.gitProc.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
