@@ -152,17 +152,42 @@ class AptManager {
         this.updateTimeout = null;
         this.updateProc = null;
         this.upgradeProc = null;
+        this.gitProc = null;
+        this.gitInProgress = false;
         this.procOutput = "";
         this.checkForUpdate();
     }
 
-    checkForUpdate() {
+    async checkForUpdate() {
         if (this.updateTimeout !== null) {
             clearTimeout(this.updateTimeout);
         }
         this.updateTimeout = setTimeout(() => {
             this.checkForUpdate();
         }, this.updateCheckInterval);
+
+        this.gitProc = spawn('git', ['pull'], { cwd: '/home/pi/mj-launcher' });
+        this.gitInProgress = true;
+        this.gitProc.stdout.on('data', (data) => {
+            console.log(`stdout: ${data}`);
+            this.procOutput += data;
+        });
+        this.gitProc.stderr.on('data', (data) => {
+            console.error(`stderr: ${data}`);
+        });
+        this.gitProc.on('close', (code) => {
+            console.log(`git pull process exited with code ${code}`);
+            this.gitInProgress = false;
+            if (this.procOutput.includes('Already up to date')) {
+                console.log('git pull up to date');
+            } else {
+                console.log('git pull updated');
+            }
+        });
+
+        while (this.gitInProgress) {
+            await waitSeconds(2);
+        }
 
         this.updateProc = spawn('sudo', ['apt', 'update']);
 
@@ -174,7 +199,7 @@ class AptManager {
             console.error(`stderr: ${data}`);
         });
         this.updateProc.on('close', (code) => {
-            if (this.procOutput.includes('can be upgraded')) {
+            if (this.procOutput.includes('can be upgraded') && !this.procOutput.includes('The following packages have been kept back')) {
                 console.log('apt update available');
                 this.upgradeProc = spawn('sudo', ['apt', 'upgrade', '-y']);
                 this.upgradeProc.stdout.on('data', (data) => {
