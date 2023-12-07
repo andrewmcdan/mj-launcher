@@ -179,9 +179,9 @@ class AptManager {
             console.log(`git pull process exited with code ${code}`);
             this.gitInProgress = false;
             if (this.procOutput.includes('Already up to date')) {
-                console.log('git pull up to date');
+                console.log('git pull: up to date');
             } else {
-                console.log('git pull updated');
+                console.log('git pull: updated');
             }
         });
 
