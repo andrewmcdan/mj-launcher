@@ -185,7 +185,7 @@ class AptManager {
                 });
                 this.upgradeProc.on('close', (code) => {
                     console.log(`apt upgrade process exited with code ${code}`);
-                    spawn('sudo', ['reboot']);
+                    //spawn('sudo', ['reboot']);
                 });
             }
             console.log(`apt update process exited with code ${code}`);
