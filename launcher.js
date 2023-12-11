@@ -155,15 +155,26 @@ class Launcher {
     async updateOptions() {
         let options = await fetch('http://mj-downloader.lan:3001/showOptions').then(res => res.json());
         console.log(options);
-        console.log(typeof options.enableAutoAdjustUpdateInterval);
         try {
-            if (options.enableAutoAdjustUpdateInterval !== null && options.enableAutoAdjustUpdateInterval !== undefined) this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval == 'true' ? true : false;
+            if (options.enableAutoAdjustUpdateInterval !== null && options.enableAutoAdjustUpdateInterval !== undefined) {
+                if (typeof options.enableAutoAdjustUpdateInterval == 'boolean') this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval;
+                else this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval == 'true' ? true : false;
+            }
             if (options.updateInterval !== null && options.updateInterval !== undefined) this.updateInterval = parseInt(options.updateInterval);
             if (options.fadeDuration !== null && options.fadeDuration !== undefined) this.fadeDuration = parseInt(options.fadeDuration);
-            if (options.showPrompt !== null && options.showPrompt !== undefined) this.showPrompt = options.showPrompt == 'true' ? true : false;
+            if (options.showPrompt !== null && options.showPrompt !== undefined) {
+                if (typeof options.showPrompt == 'boolean') this.showPrompt = options.showPrompt;
+                else this.showPrompt = options.showPrompt == 'true' ? true : false;
+            }
             if (options.timeToRestart !== null && options.timeToRestart !== undefined) this.timeToRestart = parseInt(options.timeToRestart);
-            if (options.timeToRestartEnabled !== null && options.timeToRestartEnabled !== undefined) this.timeToRestartEnabled = options.timeToRestartEnabled == 'true' ? true : false;
-            if (options.restartShow !== null && options.restartShow !== undefined) this.restartShow = options.restartShow == 'true' ? true : false;
+            if (options.timeToRestartEnabled !== null && options.timeToRestartEnabled !== undefined) {
+                if (typeof options.timeToRestartEnabled == 'boolean') this.timeToRestartEnabled = options.timeToRestartEnabled;
+                else this.timeToRestartEnabled = options.timeToRestartEnabled == 'true' ? true : false;
+            }
+            if (options.restartShow !== null && options.restartShow !== undefined) {
+                if (typeof options.restartShow == 'boolean') this.restartShow = options.restartShow;
+                else this.restartShow = options.restartShow == 'true' ? true : false;
+            }
             if (this.optionsModified) {
                 this.optionsModified = false;
                 this.startRestart();
