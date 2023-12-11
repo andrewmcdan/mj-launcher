@@ -9,21 +9,31 @@ env.DISPLAY = ':0';
 
 class Launcher {
     constructor() {
-        this.chromiumPath = '/usr/bin/chromium-browser';
+        this._restartShow = false;
+        this._showPrompt = false;
+        this._fadeDuration = 3.5;
+        this._updateInterval = 11;
+        this._enableAutoAdjustUpdateInterval = false;
+        this._timeToRestart = 0;
+        this._timeToRestartEnabled = true;
 
+        this.chromiumPath = '/usr/bin/chromium-browser';
         this.env = Object.create(process.env);
         this.env.DISPLAY = ':0';
+        this.chromium = null;
+
         this.running = false;
+        this.runTimeout = null;
+
+        this.optionsUptdate = null;
         this.timeToRestart = 0;
         this.timeToRestartEnabled = true;
-        this.runTimeout = null;
-        this.chromium = null;
-        this.optionsUptdate = null;
         this.enableAutoAdjustUpdateInterval = false;
         this.updateInterval = 11;
         this.fadeDuration = 3.5;
         this.showPrompt = false;
         this.restartShow = false;
+
         this.chromiumOptions = [
             '--noerrdialogs',
             '--disable-infobars',
@@ -36,7 +46,6 @@ class Launcher {
         this.optionsUptdate = setInterval(() => {
             this.updateOptions();
         }, 1000 * 60);
-
 
         this.startRestart();
     }
@@ -146,16 +155,21 @@ class Launcher {
     async updateOptions() {
         let options = await fetch('http://mj-downloader.lan:3001/showOptions').then(res => res.json());
         console.log(options);
-        if (options.enableAutoAdjustUpdateInterval !== null && options.enableAutoAdjustUpdateInterval !== undefined) this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval;
-        if (options.updateInterval !== null && options.updateInterval !== undefined) this.updateInterval = options.updateInterval;
-        if (options.fadeDuration !== null && options.fadeDuration !== undefined) this.fadeDuration = options.fadeDuration;
-        if (options.showPrompt !== null && options.showPrompt !== undefined) this.showPrompt = options.showPrompt;
-        if (options.timeToRestart !== null && options.timeToRestart !== undefined) this.timeToRestart = options.timeToRestart;
-        if (options.timeToRestartEnabled !== null && options.timeToRestartEnabled !== undefined) this.timeToRestartEnabled = options.timeToRestartEnabled;
-        if (options.restartShow !== null && options.restartShow !== undefined) this.restartShow = options.restartShow;
-        if (this.optionsModified) {
-            this.optionsModified = false;
-            this.startRestart();
+        console.log(typeof options.enableAutoAdjustUpdateInterval);
+        try {
+            if (options.enableAutoAdjustUpdateInterval !== null && options.enableAutoAdjustUpdateInterval !== undefined) this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval == 'true' ? true : false;
+            if (options.updateInterval !== null && options.updateInterval !== undefined) this.updateInterval = parseInt(options.updateInterval);
+            if (options.fadeDuration !== null && options.fadeDuration !== undefined) this.fadeDuration = parseInt(options.fadeDuration);
+            if (options.showPrompt !== null && options.showPrompt !== undefined) this.showPrompt = options.showPrompt == 'true' ? true : false;
+            if (options.timeToRestart !== null && options.timeToRestart !== undefined) this.timeToRestart = parseInt(options.timeToRestart);
+            if (options.timeToRestartEnabled !== null && options.timeToRestartEnabled !== undefined) this.timeToRestartEnabled = options.timeToRestartEnabled == 'true' ? true : false;
+            if (options.restartShow !== null && options.restartShow !== undefined) this.restartShow = options.restartShow == 'true' ? true : false;
+            if (this.optionsModified) {
+                this.optionsModified = false;
+                this.startRestart();
+            }
+        } catch (e) {
+            console.log(e);
         }
     }
 };
