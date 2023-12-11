@@ -23,6 +23,7 @@ class Launcher {
         this.updateInterval = 11;
         this.fadeDuration = 3.5;
         this.showPrompt = false;
+        this.restartShow = false;
         this.chromiumOptions = [
             '--noerrdialogs',
             '--disable-infobars',
@@ -85,6 +86,15 @@ class Launcher {
         if (value != this._showPrompt) this.optionsModified = true;
         this._showPrompt = value;
     }
+
+    get restartShow() {
+        return this._restartShow;
+    }
+
+    set restartShow(value) {
+        if (value != this._restartShow) this.optionsModified = true;
+        this._restartShow = value;
+    }
     //#endregion
 
     run() {
@@ -119,6 +129,7 @@ class Launcher {
             //'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
         ];
         this.chromium = spawn(this.chromiumPath, this.chromiumOptions, { env: this.env });
+        this.restartShow = false;
         this.chromium.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
         });
@@ -141,6 +152,7 @@ class Launcher {
         if (options.showPrompt !== null && options.showPrompt !== undefined) this.showPrompt = options.showPrompt;
         if (options.timeToRestart !== null && options.timeToRestart !== undefined) this.timeToRestart = options.timeToRestart;
         if (options.timeToRestartEnabled !== null && options.timeToRestartEnabled !== undefined) this.timeToRestartEnabled = options.timeToRestartEnabled;
+        if (options.restartShow !== null && options.restartShow !== undefined) this.restartShow = options.restartShow;
         if (this.optionsModified) {
             this.optionsModified = false;
             this.startRestart();
