@@ -128,7 +128,7 @@ class Launcher {
             this.chromium.kill();
             process.kill(this.chromium.pid);
             spawn('killall', ['chromium-browser']);
-            await waitSeconds(1);
+            await waitSeconds(2);
         }
         this.running = true;
         this.chromiumOptions = [
@@ -151,7 +151,42 @@ class Launcher {
             console.log(`Chromium process exited with code ${code}`);
             this.running = false;
         });
+        this.successfulStartCheck().then((success) => {
+            if (!success) {
+                console.log('Chromium failed to start in fullscreen mode. Trying again...');
+            }
+        });
         this.run();
+    }
+
+    successfulStartCheck(env = "") {
+        return new Promise((resolve, reject) => {
+            let wmctrl = spawn('wmctrl', ['-lG'], { env: this.env });
+            wmctrl.stdout.on('data', (data) => {
+                console.log(`stdout: ${data}`);
+                if (data.includes('Cannot open display')) {
+                    resolve(this.successfulStartCheck('DISPLAY=:0'));
+                }
+                if (data.includes('Chromium')) {
+                    let lines = data.split('\n');
+                    let chromiumLine = lines.find(line => line.includes('Chromium'));
+                    let regex = /\s+(\d+)\s+(\d+)\s+mj-show/g;
+                    let match = regex.exec(chromiumLine);
+                    regex = /(\d+)\s+(\d+)/g;
+                    match = regex.exec(match[0]);
+                    let resolution = { width: parseInt(match[1]), height: parseInt(match[2]) };
+                    console.log({ resolution });
+                    resolve(true);
+                }
+            });
+            wmctrl.stderr.on('data', (data) => {
+                console.error(`stderr: ${data}`);
+            });
+            wmctrl.on('close', (code) => {
+                console.log(`wmctrl process exited with code ${code}`);
+                resolve(false);
+            });
+        });
     }
 
     async updateOptions() {
