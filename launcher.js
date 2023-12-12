@@ -186,7 +186,7 @@ class Launcher {
     }
 };
 
-class AptManager {
+class UpdateManager {
     constructor() {
         this.updateCheckInterval = 1000 * 60 * 30; // 30 minutes
         this.updateTimeout = null;
@@ -267,5 +267,5 @@ function waitSeconds(seconds) {
 }
 
 let launcher = new Launcher();
-let aptManager = new AptManager();
+let updateManager = new UpdateManager();
 launcher.run();
