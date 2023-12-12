@@ -160,9 +160,11 @@ class Launcher {
             this.running = false;
         });
         await waitSeconds(5);
-        this.successfulStartCheck().then((success) => {
+        this.successfulStartCheck().then(async (success) => {
             if (!success) {
                 console.log('Chromium failed to start in fullscreen mode. Trying again...');
+                await waitSeconds(5);
+                this.startRestart();
             }
         });
         this.run();
@@ -183,19 +185,18 @@ class Launcher {
                     regex = /(\d+)\s+(\d+)/g;
                     match = regex.exec(match[0]);
                     let resolution = { width: parseInt(match[1]), height: parseInt(match[2]) };
-                    console.log({ resolution });
-                    console.log("is valid resolution: " + this.containsResolution(resolution));
-                    resolve(true);
+                    // console.log({ resolution });
+                    resolve(this.containsResolution(resolution));
                 }
             });
             wmctrl.stderr.on('data', (data) => {
-                console.error(`stderr: ${data}`);
-                if (data.includes('Cannot open display')) {
+                // console.error(`stderr: ${data}`);
+                if (data.includes('Cannot open display') && env === null) {
                     resolve(this.successfulStartCheck({ DISPLAY: ':0' }));
                 }
             });
             wmctrl.on('close', async (code) => {
-                console.log(`wmctrl process exited with code ${code}`);
+                // console.log(`wmctrl process exited with code ${code}`);
                 await waitSeconds(2);
                 resolve(false);
             });
@@ -213,7 +214,7 @@ class Launcher {
 
     async updateOptions() {
         let options = await fetch('http://mj-downloader.lan:3001/showOptions').then(res => res.json());
-        console.log(options);
+        // console.log(options);
         try {
             if (options.enableAutoAdjustUpdateInterval !== null && options.enableAutoAdjustUpdateInterval !== undefined) {
                 if (typeof options.enableAutoAdjustUpdateInterval == 'boolean') this.enableAutoAdjustUpdateInterval = options.enableAutoAdjustUpdateInterval;
