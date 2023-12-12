@@ -160,7 +160,7 @@ class Launcher {
     }
 
     successfulStartCheck(env = "") {
-        return new Promise((resolve, reject) => {
+        return new Promise(async (resolve, reject) => {
             let wmctrl = spawn('wmctrl', ['-lG'], { env: this.env });
             wmctrl.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
@@ -184,6 +184,7 @@ class Launcher {
             });
             wmctrl.on('close', (code) => {
                 console.log(`wmctrl process exited with code ${code}`);
+                await waitSeconds(2);
                 resolve(false);
             });
         });
