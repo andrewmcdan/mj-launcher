@@ -102,7 +102,7 @@ class Launcher {
 
     set restartShow(value) {
         if (value != this._restartShow) this.optionsModified = true;
-        this._restartShow = value;
+        this._restartShow = false;
     }
     //#endregion
 
@@ -187,7 +187,7 @@ class Launcher {
 };
 
 class UpdateManager {
-    constructor() {
+    constructor(launcher) {
         this.updateCheckInterval = 1000 * 60 * 30; // 30 minutes
         this.updateTimeout = null;
         this.updateProc = null;
@@ -196,6 +196,7 @@ class UpdateManager {
         this.gitInProgress = false;
         this.procOutput = "";
         this.checkForUpdate();
+        this.launcher = launcher;
     }
 
     async checkForUpdate() {
@@ -222,6 +223,7 @@ class UpdateManager {
                 console.log('git pull: up to date');
             } else {
                 console.log('git pull: updated');
+                this.launcher.restartShow = true;
             }
         });
 
@@ -267,5 +269,5 @@ function waitSeconds(seconds) {
 }
 
 let launcher = new Launcher();
-let updateManager = new UpdateManager();
+let updateManager = new UpdateManager(launcher);
 launcher.run();
