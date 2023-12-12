@@ -166,9 +166,6 @@ class Launcher {
             let wmctrl = spawn('wmctrl', ['-lG'], { env: this.env });
             wmctrl.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
-                if (data.includes('Cannot open display')) {
-                    resolve(this.successfulStartCheck('DISPLAY=:0'));
-                }
                 if (data.includes('Chromium')) {
                     let lines = data.split('\n');
                     let chromiumLine = lines.find(line => line.includes('Chromium'));
@@ -183,6 +180,9 @@ class Launcher {
             });
             wmctrl.stderr.on('data', (data) => {
                 console.error(`stderr: ${data}`);
+                if (data.includes('Cannot open display')) {
+                    resolve(this.successfulStartCheck('DISPLAY=:0'));
+                }
             });
             wmctrl.on('close', async (code) => {
                 console.log(`wmctrl process exited with code ${code}`);
