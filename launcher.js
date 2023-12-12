@@ -101,8 +101,8 @@ class Launcher {
     }
 
     set restartShow(value) {
-        if (value != this._restartShow) this.optionsModified = true;
-        this._restartShow = false;
+        if (value) this.optionsModified = true;
+        this._restartShow = value;
     }
     //#endregion
 
@@ -122,6 +122,7 @@ class Launcher {
     }
 
     async startRestart() {
+        this.restartShow = false;
         if (this.running) {
             // kill chromium
             this.chromium.kill();
