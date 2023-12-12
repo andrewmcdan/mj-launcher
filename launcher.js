@@ -138,6 +138,7 @@ class Launcher {
             //'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
         ];
         this.chromium = spawn(this.chromiumPath, this.chromiumOptions, { env: this.env });
+        spawn('unclutter', ['-idle', '0.01', '-root']);
         this.restartShow = false;
         this.chromium.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
