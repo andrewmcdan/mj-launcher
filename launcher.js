@@ -161,7 +161,10 @@ class Launcher {
 
     successfulStartCheck(env = "") {
         return new Promise((resolve, reject) => {
-            let wmctrl = spawn('wmctrl', ['-lG'], { env: this.env }).stdout.on('data', (data) => {
+            if (env != "") this.env = Object.create(process.env);
+            else this.env = env;
+            let wmctrl = spawn('wmctrl', ['-lG'], { env: this.env });
+            wmctrl.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
                 if (data.includes('Cannot open display')) {
                     resolve(this.successfulStartCheck('DISPLAY=:0'));
