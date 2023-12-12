@@ -159,10 +159,10 @@ class Launcher {
         this.run();
     }
 
-    successfulStartCheck(env = "") {
+    successfulStartCheck(env = null) {
         return new Promise((resolve, reject) => {
-            if (env != "") this.env = Object.create(process.env);
-            else this.env = env;
+            this.env = Object.create(process.env);
+            if (env !== null && env.DISPLAY !== null && env.DISPLAY !== undefined) this.env.DISPLAY = env.DISPLAY;
             let wmctrl = spawn('wmctrl', ['-lG'], { env: this.env });
             wmctrl.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
@@ -181,7 +181,7 @@ class Launcher {
             wmctrl.stderr.on('data', (data) => {
                 console.error(`stderr: ${data}`);
                 if (data.includes('Cannot open display')) {
-                    resolve(this.successfulStartCheck('DISPLAY=:0'));
+                    resolve(this.successfulStartCheck({ DISPLAY: ':0' }));
                 }
             });
             wmctrl.on('close', async (code) => {
