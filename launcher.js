@@ -283,7 +283,7 @@ class UpdateManager {
                 console.log('git pull: up to date');
             } else {
                 console.log('git pull: updated');
-                this.launcher.restartShow = true;
+                spawn('pm2', ['restart', '0'])
             }
         });
 
