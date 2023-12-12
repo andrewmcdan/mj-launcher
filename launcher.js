@@ -151,6 +151,7 @@ class Launcher {
             console.log(`Chromium process exited with code ${code}`);
             this.running = false;
         });
+        await waitSeconds(5);
         this.successfulStartCheck().then((success) => {
             if (!success) {
                 console.log('Chromium failed to start in fullscreen mode. Trying again...');
