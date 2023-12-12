@@ -168,7 +168,7 @@ class Launcher {
             wmctrl.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
                 if (data.includes('Chromium')) {
-                    let lines = data.split('\n');
+                    let lines = data.toString().split('\n');
                     let chromiumLine = lines.find(line => line.includes('Chromium'));
                     let regex = /\s+(\d+)\s+(\d+)\s+mj-show/g;
                     let match = regex.exec(chromiumLine);
