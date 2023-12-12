@@ -7,6 +7,14 @@ const { spawn } = require('child_process');
 const env = Object.create(process.env);
 env.DISPLAY = ':0';
 
+const resolutions = [
+    { width: 4096, height: 2160 },
+    { width: 3840, height: 2160 },
+    { width: 1920, height: 1080 },
+    { width: 1280, height: 720 },
+    { width: 1024, height: 768 }
+];
+
 class Launcher {
     constructor() {
         this._restartShow = false;
@@ -176,6 +184,7 @@ class Launcher {
                     match = regex.exec(match[0]);
                     let resolution = { width: parseInt(match[1]), height: parseInt(match[2]) };
                     console.log({ resolution });
+                    console.log("is valid resolution: " + this.containsResolution(resolution));
                     resolve(true);
                 }
             });
@@ -190,6 +199,15 @@ class Launcher {
                 await waitSeconds(2);
                 resolve(false);
             });
+        });
+    }
+
+    containsResolution(target) {
+        const targetWidth = target.width;
+        const targetHeight = target.height;
+
+        return resolutions.some(resolution => {
+            return resolution.width === targetWidth && resolution.height === targetHeight;
         });
     }
 
