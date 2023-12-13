@@ -55,6 +55,15 @@ class Launcher {
             this.updateOptions();
         }, 1000 * 60);
 
+        this.checkForLossOfFullscreen = setInterval(() => {
+            this.successfulStartCheck().then(success => {
+                if (!success) {
+                    console.log('Chromium lost fullscreen. Restarting...');
+                    this.startRestart();
+                }
+            });
+        }, 1000 * 60);
+
         this.startRestart();
     }
 
