@@ -194,7 +194,7 @@ class Launcher {
                     regex = /(\d+)\s+(\d+)/g;
                     match = regex.exec(match[0]);
                     let resolution = { width: parseInt(match[1]), height: parseInt(match[2]) };
-                    console.log(resolution);
+                    // console.log(resolution);
                     resolve(this.containsResolution(resolution));
                 }
             });
@@ -215,12 +215,12 @@ class Launcher {
     containsResolution(target) {
         const targetWidth = target.width;
         const targetHeight = target.height;
-        console.log("target width x height: " + targetWidth + 'x' + targetHeight)
+        // console.log("target width x height: " + targetWidth + 'x' + targetHeight)
 
         let found = resolutions.some(resolution => {
             return ((resolution.width === targetWidth) && (resolution.height === targetHeight));
         });
-        console.log("found: " + found);
+        // console.log("found: " + found);
         return found;
     }
 
