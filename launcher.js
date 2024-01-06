@@ -46,8 +46,8 @@ class Launcher {
             '--noerrdialogs',
             '--disable-infobars',
             '--kiosk',
-            'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration + '&showPrompt=' + (this.showPrompt ? 'true' : 'false')
-            //'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
+            'http://mj-downloader.lan/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration + '&showPrompt=' + (this.showPrompt ? 'true' : 'false')
+            //'http://mj-downloader.lan/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
         ];
         this.optionsModified = false;
 
@@ -152,8 +152,8 @@ class Launcher {
             '--noerrdialogs',
             '--disable-infobars',
             '--kiosk',
-            'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration + '&showPrompt=' + (this.showPrompt ? 'true' : 'false')
-            //'http://mj-downloader.lan:3001/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
+            'http://mj-downloader.lan/show?enableAutoAdjustUpdateInterval=' + (this.enableAutoAdjustUpdateInterval ? 'true' : 'false') + '&updateInterval=' + this.updateInterval + '&fadeDuration=' + this.fadeDuration + '&showPrompt=' + (this.showPrompt ? 'true' : 'false')
+            //'http://mj-downloader.lan/show?enableAutoAdjustUpdateInterval=false&updateInterval=11&fadeDuration=3.5'
         ];
         this.chromium = spawn(this.chromiumPath, this.chromiumOptions, { env: this.env });
         spawn('unclutter', ['-idle', '0.01', '-root']);
@@ -225,7 +225,7 @@ class Launcher {
     }
 
     async updateOptions() {
-        let options = await fetch('http://mj-downloader.lan:3001/showOptions').then(res => res.json());
+        let options = await fetch('http://mj-downloader.lan/showOptions').then(res => res.json());
         // console.log(options);
         try {
             if (options.enableAutoAdjustUpdateInterval !== null && options.enableAutoAdjustUpdateInterval !== undefined) {
