@@ -160,6 +160,8 @@ class Launcher {
         ];
         this.chromium = spawn(this.chromiumPath, this.chromiumOptions, { env: this.env });
         spawn('unclutter', ['-idle', '0.01', '-root']);
+        // spawn('xdotool', ['mousemove', '0', '0']);
+        spawn('xdotool', ['mousemove_relative', '--', '-1920', '-1080']);
         this.restartShow = false;
         this.chromium.stdout.on('data', (data) => {
             console.log(`stdout: ${data}`);
