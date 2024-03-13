@@ -144,8 +144,10 @@ class Launcher {
             // kill chromium
             this.chromium.kill();
             process.kill(this.chromium.pid);
-            spawn('rm', ['-R', '/home/andrew/.config/chromium/Default/Cache']);
             spawn('killall', ['chromium-browser']);
+            await waitSeconds(2);
+            spawn('rm', ['-R', '/home/andrew/.config/chromium/Default/Cache']);
+            spawn('rm', ['-rf', '~/.config/chromium/Singleton*']);
             await waitSeconds(2);
         }
         this.running = true;
