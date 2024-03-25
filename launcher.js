@@ -147,6 +147,7 @@ class Launcher {
             spawn('killall', ['chromium-browser']);
             await waitSeconds(2);
             spawn('rm', ['-R', '/home/andrew/.config/chromium/Default/Cache']);
+            spawn('rm', ['-R', '/home/andrew/.config/chromium/BrowserMetrics/*.*']);
             spawn('rm', ['-rf', '~/.config/chromium/Singleton*']);
             await waitSeconds(2);
         }
