@@ -221,7 +221,7 @@ class Launcher {
     containsResolution(target) {
         const targetWidth = target.width;
         const targetHeight = target.height;
-        // console.log("target width x height: " + targetWidth + 'x' + targetHeight)
+        console.log("target width x height: " + targetWidth + 'x' + targetHeight)
 
         let found = resolutions.some(resolution => {
             return ((resolution.width === targetWidth) && (resolution.height === targetHeight));
