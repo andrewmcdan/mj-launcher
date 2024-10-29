@@ -174,7 +174,7 @@ class Launcher {
             console.log(`Chromium process exited with code ${code}`);
             this.running = false;
         });
-        await waitSeconds(5);
+        await waitSeconds(10);
         this.successfulStartCheck().then(async (success) => {
             if (!success) {
                 console.log('Chromium failed to start in fullscreen mode. Trying again...');
@@ -200,18 +200,18 @@ class Launcher {
                     regex = /(\d+)\s+(\d+)/g;
                     match = regex.exec(match[0]);
                     let resolution = { width: parseInt(match[1]), height: parseInt(match[2]) };
-                    // console.log(resolution);
+                    console.log(resolution);
                     resolve(this.containsResolution(resolution));
                 }
             });
             wmctrl.stderr.on('data', (data) => {
-                // console.error(`stderr: ${data}`);
+                console.error(`stderr: ${data}`);
                 if (data.includes('Cannot open display') && env === null) {
                     resolve(this.successfulStartCheck({ DISPLAY: ':0' }));
                 }
             });
             wmctrl.on('close', async (code) => {
-                // console.log(`wmctrl process exited with code ${code}`);
+                console.log(`wmctrl process exited with code ${code}`);
                 await waitSeconds(2);
                 resolve(false);
             });
