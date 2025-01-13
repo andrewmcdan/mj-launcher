@@ -189,6 +189,7 @@ class Launcher {
         return new Promise((resolve, reject) => {
             this.env = Object.create(process.env);
             if (env !== null && env.DISPLAY !== null && env.DISPLAY !== undefined) this.env.DISPLAY = env.DISPLAY;
+            this.env.DISPLAY = ':0';
             let wmctrl = spawn('wmctrl', ['-lG'], { env: this.env });
             wmctrl.stdout.on('data', (data) => {
                 console.log(`stdout: ${data}`);
