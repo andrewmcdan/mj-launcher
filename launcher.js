@@ -331,7 +331,7 @@ class UpdateManager {
                 upgradableProc.stderr.on('data', (data)=>{
                     console.error(`stderr: ${data}`);
                 });
-                upgradable.on('close', (code)=>{
+                upgradableProc.on('close', (code)=>{
                     if(code == 0 && upgradableStdout.split(/\r\n|\r|\n/).length > 3)
                     {
                         console.log('apt update available');
