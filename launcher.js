@@ -321,17 +321,32 @@ class UpdateManager {
         });
         this.updateProc.on('close', (code) => {
             if (this.procOutput.includes('can be upgraded') && !this.procOutput.includes('The following packages have been kept back')) {
-                console.log('apt update available');
-                this.upgradeProc = spawn('sudo', ['apt', 'upgrade', '-y']);
-                this.upgradeProc.stdout.on('data', (data) => {
+                let waitForUpgrdableCheck = false;
+                let upgradableProc = spawn('sudo', ['apt', 'list', '--upgradable']);
+                let upgradableStdout = "";
+                upgradableProc.stdout.on('data', (data)=>{
                     console.log(`stdout: ${data}`);
+                    upgradableStdout += data;
                 });
-                this.upgradeProc.stderr.on('data', (data) => {
+                upgradableProc.stderr.on('data', (data)=>{
                     console.error(`stderr: ${data}`);
                 });
-                this.upgradeProc.on('close', (code) => {
-                    console.log(`apt upgrade process exited with code ${code}`);
-                    spawn('sudo', ['reboot']);
+                upgradable.on('close', (code)=>{
+                    if(code == 0 && upgradableStdout.split(/\r\n|\r|\n/).length > 3)
+                    {
+                        console.log('apt update available');
+                        this.upgradeProc = spawn('sudo', ['apt', 'upgrade', '-y']);
+                        this.upgradeProc.stdout.on('data', (data) => {
+                            console.log(`stdout: ${data}`);
+                        });
+                        this.upgradeProc.stderr.on('data', (data) => {
+                            console.error(`stderr: ${data}`);
+                        });
+                        this.upgradeProc.on('close', (code) => {
+                            console.log(`apt upgrade process exited with code ${code}`);
+                            spawn('sudo', ['reboot']);
+                        });
+                    }
                 });
             }
             console.log(`apt update process exited with code ${code}`);
